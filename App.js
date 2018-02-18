@@ -34,7 +34,7 @@ export default class App extends Component {
   }
   render() {
     const {input, showInput} = this.state
-    console.log("haha")
+
     return (
     	// <KeyboardAvoidingView behavior='padding' style={styles.container}>
 
@@ -62,7 +62,8 @@ export default class App extends Component {
      <Provider store={createStore(reducer)}>
 
       <View style={{flex:1}}>
-        <History />
+        <View style={{height:20}} />
+        <AddEntry />
 
       </View>
 

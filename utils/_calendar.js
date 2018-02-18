@@ -16,7 +16,9 @@ function setDummyData () {
   for (let i = -183; i < 0; i++) {
     const time = timestamp + i * 24 * 60 * 60 * 1000
     const strTime = timeToString(time)
-    dummyData[strTime] = getRandomNumber(3) % 2 === 0
+    let num = getRandomNumber(3) % 2
+    //console.log("getRandomNumber(3) % 2", num)
+    dummyData[strTime] = num === 0
       ? {
           run: getRandomNumber(run.max),
           bike: getRandomNumber(bike.max),
@@ -49,7 +51,8 @@ function setMissingDates (dates) {
 }
 
 export function formatCalendarResults (results) {
-  return results === null
+
+  return results === '{}'
     ? setDummyData()
     : setMissingDates(JSON.parse(results))
 }

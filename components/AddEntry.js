@@ -21,12 +21,22 @@ import {connect} from 'react-redux'
 import {addEntry} from '../actions'
 
 import {white, purple} from '../utils/colors'
+import styled from 'styled-components'
+
+const SubmitBtnText = styled.Text`
+		color: white;
+		font-size: 20;
+		text-align: center;
+`
+
 
 function SubmitBtn ({onPress}) {
 	return (
 
 		<TouchableOpacity style={Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn} onPress={onPress}>
-			<Text style={styles.submitBtnText}>SUBMIT</Text>
+			<SubmitBtnText>
+				SUBMIT
+			</SubmitBtnText>
 		</TouchableOpacity>
 
 	)
@@ -201,11 +211,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
-	submitBtnText: {
-		color: white,
-		fontSize: 22,
-		textAlign: 'center',
-	},
+
 	row: {
 		flexDirection: 'row',
 		flex: 1,
