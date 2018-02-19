@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+
 import {
   StyleSheet,
   Switch,
@@ -8,32 +9,107 @@ import {
   Image,
   KeyboardAvoidingView,
   WebView,
-  Ionicons,
-  Platform
+  Platform,
+  StatusBar as ReactNativeStatusBar
 } from 'react-native'
+
 import AddEntry from './components/AddEntry'
 import History from './components/History'
+
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import reducer from './reducers'
 
-export default class App extends Component {
+import {TabNavigator} from 'react-navigation'
 
-  constructor(props){
-    super(props)
-    this.state={
-      input: "hi Sam",
-      showInput: false
+import {FontAwesome, Ionicons} from '@expo/vector-icons'
 
+import {purple, white} from './utils/colors'
+
+
+import {Constants} from 'expo'
+
+// function Dashboard(){
+//   return (
+//     <View>
+//       <Text>Dashboard</Text>
+
+//     </View>
+//   )
+// }
+// function Home(){
+//   return (
+//     <View>
+//       <Text>HOME</Text>
+//     </View>
+//   )
+// }
+
+function StatusBar({backgroundColor, ...props}){
+  return (
+    <View style={{backgroundColor, height:Constants.statusBarHeight}}>
+      <ReactNativeStatusBar translucent backgroundColor={backgroundColor} {...props} />
+    </View>
+  )
+}
+
+const Tabs = TabNavigator({
+  History: {
+    screen: History,
+    navigationOptions: {
+      tabBarLabel: 'History',
+      tabBarIcon: ({tintColor})=><Ionicons name='ios-bookmarks' size={30} color={tintColor} />
+    }
+  },
+  AddEntry: {
+    screen: AddEntry,
+    navigationOptions: {
+      tabBarLabel: 'AddEntry',
+      tabBarIcon: ({tintColor})=><FontAwesome name='plus-square' size={30} color={tintColor} />
+    }
+
+  }
+}, {
+  navigationOptions:{
+    header: null
+  },
+  tabBarOptions:{
+    activeTintColor: Platform.OS === 'ios' ? purple:white,
+    style:{
+      height:56,
+      backgroundColor:Platform.OS === 'ios' ? white:purple,
+      shadowColor:'rgba(0,0,0,0.24)',
+      shadowOffset:{
+        width:0,
+        height:3
+      },
+      shadowRadius:6,
+      shadowOpacity:1
     }
   }
-  handleToggleSwitch = () => {
-    this.setState(state=>({
-      showInput: !state.showInput
-    }))
-  }
+})
+
+export default class App extends Component {
+
+  // constructor(props){
+  //   super(props)
+  //   this.state={
+  //     input: "hi Sam",
+  //     showInput: false
+
+  //   }
+  // }
+  // handleToggleSwitch = () => {
+  //   this.setState(state=>({
+  //     showInput: !state.showInput
+  //   }))
+  // }
+
+
+
+
   render() {
-    const {input, showInput} = this.state
+
 
     return (
     	// <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -59,20 +135,18 @@ export default class App extends Component {
      //    )}
      //  </KeyboardAvoidingView>
 
+
+
+
      <Provider store={createStore(reducer)}>
 
       <View style={{flex:1}}>
-        <View style={{height:20}} />
-        <AddEntry />
 
+        <StatusBar backgroundColor={purple} barStyle='light-content'/>
+        <Tabs />
       </View>
 
      </Provider>
-
-
-
-
-
 
     );
   }
@@ -93,12 +167,8 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-
-
   },
   box: {
     height: 50,
