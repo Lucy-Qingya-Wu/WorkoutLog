@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 
 import {
+  TouchableOpacity,
   StyleSheet,
   Switch,
   View,
@@ -15,35 +16,39 @@ import {
 
 import AddEntry from './components/AddEntry'
 import History from './components/History'
+import EntryDetail from './components/EntryDetail'
 
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import reducer from './reducers'
 
-import {TabNavigator} from 'react-navigation'
+import {TabNavigator, StackNavigator, DrawerNavigator} from 'react-navigation'
 
 import {FontAwesome, Ionicons} from '@expo/vector-icons'
 
-import {purple, white} from './utils/colors'
+import {purple, white, lightPurp} from './utils/colors'
 
 
 import {Constants} from 'expo'
 
-// function Dashboard(){
-//   return (
-//     <View>
-//       <Text>Dashboard</Text>
+function Dashboard(){
+  return (
+    <View>
+      <Text>Dashboard</Text>
 
-//     </View>
-//   )
-// }
-// function Home(){
-//   return (
-//     <View>
-//       <Text>HOME</Text>
-//     </View>
-//   )
-// }
+    </View>
+  )
+}
+function Home({navigation}){
+  return (
+    <View style={styles.container}>
+      <Text>Home</Text>
+      <TouchableOpacity style={styles.iosSubmitBtn} onPress={()=>navigation.navigate('Dashboard')}>
+        <Text>to dashboard</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
 
 function StatusBar({backgroundColor, ...props}){
   return (
@@ -52,6 +57,7 @@ function StatusBar({backgroundColor, ...props}){
     </View>
   )
 }
+
 
 const Tabs = TabNavigator({
   History: {
@@ -89,6 +95,22 @@ const Tabs = TabNavigator({
   }
 })
 
+const MainNavigator = StackNavigator({
+  Home: {
+    screen: Tabs,
+
+  },
+  EntryDetail: {
+    screen: EntryDetail,
+    navigationOptions: {
+
+      headerTintColor: 'white',
+      headerStyle: {
+        backgroundColor: purple
+      }
+    }
+  }
+})
 export default class App extends Component {
 
   // constructor(props){
@@ -143,7 +165,8 @@ export default class App extends Component {
       <View style={{flex:1}}>
 
         <StatusBar backgroundColor={purple} barStyle='light-content'/>
-        <Tabs />
+
+        <MainNavigator />
       </View>
 
      </Provider>
@@ -170,6 +193,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
   },
+  iosSubmitBtn: {
+    backgroundColor: lightPurp,
+    padding: 10,
+    borderRadius: 7,
+    height: 45,
+    marginLeft: 40,
+    marginRight: 40
+  },
   box: {
     height: 50,
     width: 50,
@@ -189,5 +220,5 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     margin: 50
-  }
+  },
 })

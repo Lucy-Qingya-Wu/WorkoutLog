@@ -5,6 +5,7 @@ import { CALENDAR_STORAGE_KEY, formatCalendarResults} from './_calendar'
 export function fetchCalendarResults () {
 	return AsyncStorage.getItem(CALENDAR_STORAGE_KEY)
 		.then(data => {
+
 			return formatCalendarResults(data)
 		})
 }

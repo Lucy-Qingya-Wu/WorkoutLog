@@ -47,7 +47,7 @@ class History extends Component{
         // console.log("formattedDate: ", formattedDate)
         // console.log("key: ", key)
 
-
+        const {navigation} = this.props
 		return (
 			<View style={styles.item}>
 				{today
@@ -57,7 +57,10 @@ class History extends Component{
 				 		{today}
 				 	</Text>
 				   </View>
-				 : <TouchableOpacity onPress={()=>console.log("Pressed!")}>
+				 : <TouchableOpacity onPress={()=>navigation.navigate(
+				 		'EntryDetail',
+				 		{entryId : key}
+				 	)}>
 				 	<MetricCard  date={formattedDate} metrics={metrics}/>
 				   </TouchableOpacity>
 				}
@@ -78,7 +81,9 @@ class History extends Component{
 	}
 
 	render(){
+
 		const {entries} = this.props
+
 		const {ready} = this.state
         if (ready === false){
         	return (<AppLoading />)

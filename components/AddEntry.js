@@ -22,6 +22,7 @@ import {addEntry} from '../actions'
 
 import {white, purple} from '../utils/colors'
 import styled from 'styled-components'
+import {NavigationActions} from 'react-navigation'
 
 const SubmitBtnText = styled.Text`
 		color: white;
@@ -61,6 +62,8 @@ class AddEntry extends Component {
 		const key = timeToString()
 		const entry = this.state
 
+        this.toHome()
+
 		this.props.dispatch(addEntry({
 			[key]:entry
 		}))
@@ -75,6 +78,7 @@ class AddEntry extends Component {
 
 		// navigate to home
 
+
 		submitEntry({key, entry})
 
 		// clearn local notification
@@ -88,9 +92,17 @@ class AddEntry extends Component {
 			[key]: getDailyReminderValue()
 		}))
 		// route to home
+
+		this.toHome()
+
 		removeEntry(key)
 	}
-
+    toHome = () => {
+    	const {navigation} = this.props
+    	navigation.dispatch(NavigationActions.back({
+    		key: 'AddEntry'
+    	}))
+    }
 	increment = (metric) => {
 		const {max, step} = getMetricMetaInfo(metric)
 
@@ -108,7 +120,7 @@ class AddEntry extends Component {
 		const {step} = getMetricMetaInfo(metric)
 		this.setState(state=>{
 			const count = state[metric]-step
-			console.log("count ", count)
+
 			return {
 				...state,
 				[metric]: count < 0 ? 0:count
@@ -228,7 +240,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state){
 	const key = timeToString()
-	console.log("in mapStateToProps state ", state)
+
 	return {
 		alreadyLogged: state[key] && typeof state[key].today === 'undefined'
 	}

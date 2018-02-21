@@ -8,7 +8,7 @@ const entries = (state={}, action) => {
 				...action.entries
 			}
 		case ADD_ENTRY:
-			console.log("action.entry", action.entry)
+			// console.log("action.entry", action.entry)
 			return {
 				...state,
 				...action.entry
