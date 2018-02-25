@@ -8,7 +8,14 @@ import {
 			Slider as ReactNativeSlider,
 			Platform
        } from 'react-native'
-import {getMetricMetaInfo, timeToString, getDailyReminderValue} from '../utils/helpers'
+import {
+	getMetricMetaInfo,
+	timeToString,
+	getDailyReminderValue,
+    clearLocalNotifications,
+    setLocalNotification
+
+} from '../utils/helpers'
 
 import Stepper from './Stepper'
 import Slider from './Slider'
@@ -81,7 +88,7 @@ class AddEntry extends Component {
 
 		submitEntry({key, entry})
 
-		// clearn local notification
+		clearLocalNotifications().then(setLocalNotification)
 
 	}
 

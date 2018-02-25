@@ -1,55 +1,72 @@
 import React, {Component} from 'react'
 
 import {
-  TouchableOpacity,
+
   StyleSheet,
   Switch,
   View,
   TextInput,
   Text,
-  Image,
+
   KeyboardAvoidingView,
   WebView,
   Platform,
-  StatusBar as ReactNativeStatusBar
+  StatusBar as ReactNativeStatusBar,
+
+  ImageEditor,
+  TouchableOpacity,
+  Image,
+
 } from 'react-native'
 
+import {ImagePicker} from 'expo'
+
 import AddEntry from './components/AddEntry'
+
 import History from './components/History'
 import EntryDetail from './components/EntryDetail'
-
+import Live from './components/Live'
 import {createStore} from 'redux'
 import {Provider} from 'react-redux'
 import reducer from './reducers'
 
 import {TabNavigator, StackNavigator, DrawerNavigator} from 'react-navigation'
 
-import {FontAwesome, Ionicons} from '@expo/vector-icons'
+import {FontAwesome, Ionicons, MaterialCommunityIcons} from '@expo/vector-icons'
 
 import {purple, white, lightPurp} from './utils/colors'
 
 
 import {Constants} from 'expo'
 
-function Dashboard(){
-  return (
-    <View>
-      <Text>Dashboard</Text>
+import { setLocalNotification } from './utils/helpers'
 
-    </View>
-  )
-}
+const Dashboard = ({ navigation }) => (
+  <View>
+    <Text>This is the Dashboard view</Text>
+    <TouchableOpacity style={styles.iosSubmitBtn} onPress={() => navigation.navigate('DrawerOpen')}>
+      <Text>open drawer</Text>
+    </TouchableOpacity>
+  </View>
+);
 function Home({navigation}){
   return (
     <View style={styles.container}>
       <Text>Home</Text>
-      <TouchableOpacity style={styles.iosSubmitBtn} onPress={()=>navigation.navigate('Dashboard')}>
-        <Text>to dashboard</Text>
+      <TouchableOpacity style={styles.iosSubmitBtn} onPress={() => navigation.navigate('DrawerOpen')}>
+        <Text>open drawer</Text>
       </TouchableOpacity>
     </View>
   )
 }
-
+const Drawer = DrawerNavigator({
+  Home: {
+    screen: Home
+  },
+  Dashboard: {
+    screen: Dashboard
+  }
+});
 function StatusBar({backgroundColor, ...props}){
   return (
     <View style={{backgroundColor, height:Constants.statusBarHeight}}>
@@ -60,6 +77,7 @@ function StatusBar({backgroundColor, ...props}){
 
 
 const Tabs = TabNavigator({
+
   History: {
     screen: History,
     navigationOptions: {
@@ -73,14 +91,22 @@ const Tabs = TabNavigator({
       tabBarLabel: 'AddEntry',
       tabBarIcon: ({tintColor})=><FontAwesome name='plus-square' size={30} color={tintColor} />
     }
+  },
+  Live:{
+    screen: Live,
+    navigationOptions: {
+      tabBarLabel: 'Live',
+      tabBarIcon: ({tintColor})=><Ionicons name='ios-speedometer' size={30} color={tintColor} />
+    }
+  },
 
-  }
+
 }, {
   navigationOptions:{
     header: null
   },
   tabBarOptions:{
-    activeTintColor: Platform.OS === 'ios' ? purple:white,
+    activeTintColor: Platform.OS === 'ios' ? lightPurp:white,
     style:{
       height:56,
       backgroundColor:Platform.OS === 'ios' ? white:purple,
@@ -104,34 +130,54 @@ const MainNavigator = StackNavigator({
     screen: EntryDetail,
     navigationOptions: {
 
-      headerTintColor: 'white',
+      headerTintColor: 'red',
       headerStyle: {
         backgroundColor: purple
       }
     }
-  }
+  },
+
 })
 export default class App extends Component {
 
-  // constructor(props){
-  //   super(props)
-  //   this.state={
-  //     input: "hi Sam",
-  //     showInput: false
 
-  //   }
-  // }
-  // handleToggleSwitch = () => {
-  //   this.setState(state=>({
-  //     showInput: !state.showInput
-  //   }))
-  // }
+  constructor(props){
+    super(props)
+    this.state={
+      image:null
+    }
+  }
 
+  componentDidMount() {
+    setLocalNotification()
+  }
 
+  pickImage = ()=>{
 
+    ImagePicker.launchImageLibraryAsync({
+      allowEditing: true,
+      aspect:[2:1]
+    }).then(result=>{
+      if (result.cancelled){
+        return
+      }
+      ImageEditor.cropImage(result.uri, {
+        offset:{x:0,y:0},
+        size:{width:result.width, height:result.height},
+        displaySize:{width:200, height:100},
+        resizeMode:'contain',
+      },
+      (uri)=>{
+        console.log("uri -> ", uri)
+        this.setState({image:uri})
+      },
+      ()=>console.log("pickImage=>ImageEditor=>error"))
+    })
+  }
 
   render() {
 
+    const {image} = this.state
 
     return (
     	// <KeyboardAvoidingView behavior='padding' style={styles.container}>
@@ -170,6 +216,27 @@ export default class App extends Component {
       </View>
 
      </Provider>
+
+
+
+
+      // <View style={{flex:1}}>
+
+      //   <StatusBar backgroundColor={purple} barStyle='light-content'/>
+
+      //   <TouchableOpacity onPress={this.pickImage}>
+      //     <Text>Open Camera Roll</Text>
+      //   </TouchableOpacity>
+
+      //   {image && (
+      //     <View>
+      //     <Text>{image}</Text>
+      //     <Image style={styles.img} source={{uri:image}}/>
+      //     </View>
+      //   )}
+      // </View>
+
+
 
     );
   }
@@ -217,8 +284,8 @@ const styles = StyleSheet.create({
     margin: 50
   },
   img: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     margin: 50
   },
 })
